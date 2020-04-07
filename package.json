@@ -1,0 +1,21 @@
+{
+  "name": "wechat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.0.2",
+    "heredoc": "^1.3.1",
+    "htmlparser2": "^4.1.0",
+    "koa": "2.11.0",
+    "raw-body": "^2.4.1",
+    "request": "2.88.2",
+    "request-promise": "^4.2.5"
+  }
+}
