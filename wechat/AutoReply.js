@@ -12,7 +12,7 @@ const strategy = {
 }
 
 class AutoReply {
-  constructor(ctx, next) {
+  constructor(ctx) {
     this.ctx = ctx
     this.wechatMsg = ctx.wechatMsg
   }
@@ -33,21 +33,35 @@ class AutoReply {
    * @memberof AutoReply
    */
   addReply(msg, replyFn, type) {
-    if(!this.isPromiseOrAsyncFn(replyFn)) {
-      throw Error('请传入promise或async函数作为回复内容')
+    if(typeof replyFn !== 'function') {
+      throw Error('请传入函数作为回复内容')
     }
 
-    const { wechatMsg } = this
-    const reply = ctx => {
-      replyFn.then(reply => {
-        const replyXml = genReplyXml(reply.msgType, reply.content, wechatMsg)
-        ctx.status = 200
-        ctx.type = 'application/xml'
-        ctx.body = replyXml
-      })
+    const reply = () => {
+      const reply = replyFn()
+
+      if(this.isPromise(reply) || this.isAsyncFn(replyFn)) {
+        reply.then(data => {
+          this.fire(data)
+        }).catch(err => {
+          console.log('设置回复内容出错')
+          console.error(err)
+        })
+
+        return
+      }
+      
+      return this.fire(reply)
     }
 
     Object.assign(strategy[type], { [msg]: reply })
+  }
+
+  fire(reply) {
+    const ctx = this.ctx
+    ctx.status = 200
+    ctx.type = 'application/xml'
+    ctx.body = genReplyXml(reply.msgType, reply.content, this.wechatMsg)
   }
 
   reply() {
@@ -60,14 +74,16 @@ class AutoReply {
     }else if(MsgType === 'event' && replyObj[Event]) {
       replyObj[Event](ctx)
     }else {
-      ctx.status = 200
-      ctx.type = 'application/xml'
-      ctx.body = genReplyXml(strategy.default.msgType, strategy.default.content, this.wechatMsg)
+      this.fire(strategy.default)
     }
   }
 
-  isPromiseOrAsyncFn(v) {
-    return ['[object Promise]', '[object AsyncFunction]'].includes(Object.prototype.toString.call(v))
+  isPromise(v) {
+    return Object.prototype.toString.call(v) === '[object Promise]'
+  }
+
+  isAsyncFn(v) {
+    return Object.prototype.toString.call(v) === '[object AsyncFunction]'
   }
 }
 

@@ -66,7 +66,11 @@ class AccessToken {
       console.error(err)
     })
 
-    this.access_token = resp
+    const access_token = {
+      access_token: resp.access_token,
+      expires_in: Date.now() - 20 + resp.expires_in * 1000
+    }
+    this.access_token = access_token
   }
 
   isDisabled() {
