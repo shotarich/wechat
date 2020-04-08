@@ -1,29 +1,32 @@
 const Koa = require('koa')
-const getRawBody = require('raw-body')
-const { xml2Json } = require('./util')
-const weixin = require('./wechat/weixin')
-const isWechatReq = require('./libs/checkWechat')
+const Wechat = require('./wechat/Wechat')
+const AuotReply = require('./wechat/AutoReply')
+const replyConfs = require('./wechat/replyConfig')
+const parseWechatReq = require('./libs/parseWechatReq')
+const validWechatAccess = require('./libs/validWechatAccess')
 
 const app = new Koa()
-app.use(isWechatReq())
+
+app.use(validWechatAccess)
+
 app.use(async (ctx, next) => {
-  const method = ctx.method.toLowerCase()
-  if(method !== 'post') return
+  if(ctx.method.toLowerCase() !== 'post') return
 
-  const data = await getRawBody(ctx.req, {
-    length: ctx.length,
-    limit: '1mb',
-    encoding: this.charset
-  }).catch(err => {
-    console.error(err)
+  await next()
+
+  const wechat = new Wechat()
+  const autoReply = new AuotReply(ctx, next)
+
+  const replies = replyConfs(wechat)
+  replies.text.forEach(item => {
+    autoReply.addMsgReply(item.msg, item.reply)
   })
-
-  const wechat = ctx.wechat
-  const formatedMsg = xml2Json(data)
-  ctx.formatedMsg = formatedMsg
-
-  await weixin.genReply(ctx, next)
-  wechat.reply(ctx)
+  replies.event.forEach(item => {
+    autoReply.addEventReply(item.name, item.reply)
+  })
+  autoReply.reply()
 })
 
-app.listen(80)
+app.use(parseWechatReq)
+
+app.listen(8000)

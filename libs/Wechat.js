@@ -1,58 +1,30 @@
-const fs = require('fs')
-const request = require('request-promise')
-const { genReplyXml } = require('../util')
-const config = require('../constants/wxToken')
-const AccessToken = require('./AccessToken')
-const access_token_conf = require('../config/access_token')
+const replyConfFn = require('../wechat/replyConfig')
+const path = require('path')
 
-class Wechat {
-  constructor() {
-    const validateConf = {
-      appID: config.appID,
-      appSecret: config.appSecret,
-      ...access_token_conf
+module.exports = {
+  genReply: async (ctx, next) => {
+    const formatedMsg = ctx.formatedMsg
+    const { MsgType, Event, Content } = formatedMsg
+
+    // const replyConf = replyConfFn()
+    // const main = replyConf[MsgType]
+    // const reply = Array.isArray(main)
+    //   ? (main.find(item => item.content === Content) || main[0])['reply']
+    //   : main[Event]
+    if(MsgType === 'text' && Content.toString() === '3') {
+      const filePath = path.join(__dirname, '../files/image/1.png')
+      ctx.wechat.uploadTempMaterial('image', filePath).then(data =>{
+        ctx.body = {
+          msgType: 'image',
+          content: {
+            img_id: data.media_id
+          }
+        }
+      })
     }
 
-    this.accessToken = new AccessToken(validateConf)
-  }
+    // ctx.body = typeof reply === 'function' ? reply() : ''
 
-  reply(ctx) {
-    if(ctx.body === '') return
-
-    const { msgType, content } = ctx.body
-    const formatedMsg = ctx.formatedMsg
-    const replyXml = genReplyXml(msgType, content, formatedMsg)
-
-    ctx.status = 200
-    ctx.type = 'application/xml'
-    ctx.body = replyXml
-  }
-
-  uploadTempMaterial(msgType, filePath) {
-    return new Promise((resolve, reject) =>{
-      const formData = {
-        media: fs.createReadStream(filePath)
-      }
-  
-      this.accessToken.get().then(access_token => {
-        const url = `${config.api_prefix_url + upload_temp_material_path}?access_token=${access_token}&type=${msgType}`
-  
-        request({
-          url,
-          formData,
-          method: 'post',
-        }).then(resp => {
-          if(resp) {
-            resolve(resp)
-          }else {
-            throw Error('upload material fails')
-          }
-        }).catch(err => {
-          reject(err)
-        })
-      })
-    })
+    await next()
   }
 }
-
-module.exports = Wechat

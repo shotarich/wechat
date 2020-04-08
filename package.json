@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon app.js",
     "start": "node app.js"
   },
   "keywords": [],
@@ -17,5 +18,8 @@
     "raw-body": "^2.4.1",
     "request": "2.88.2",
     "request-promise": "^4.2.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
   }
 }

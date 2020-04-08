@@ -12,15 +12,15 @@ const tpl = heredoc(() => {/*
       <Content><![CDATA[<%= content.text %>]]></Content>
     <% }else if(msgType === 'image') { %>
       <Image>
-        <MediaId><![CDATA[<%= content.img_id %>]]></MediaId>
+        <MediaId><![CDATA[<%= content.media_id %>]]></MediaId>
       </Image>
     <% }else if(msgType === 'voice') { %>
       <Voice>
-        <MediaId><![CDATA[<%= content.voice_id %>]]></MediaId>
+        <MediaId><![CDATA[<%= content.media_id %>]]></MediaId>
       </Voice>
     <% }else if(msgType === 'vedio') { %>
       <Video>
-        <MediaId><![CDATA[<%= content.vedio_id %>]]></MediaId>
+        <MediaId><![CDATA[<%= content.media_id %>]]></MediaId>
         <Title><![CDATA[<%= content.vedio_title %>]]></Title>
         <Description><![CDATA[<%= content.vedio_description %>]]></Description>
       </Video>
@@ -30,7 +30,7 @@ const tpl = heredoc(() => {/*
         <Description><![CDATA[<%= content.music_description %>]]></Description>
         <MusicUrl><![CDATA[<%= content.music_url %>]]></MusicUrl>
         <HQMusicUrl><![CDATA[<%= content.hq_music_url %>]]></HQMusicUrl>
-        <ThumbMediaId><![CDATA[<%= content.music_id %>]]></ThumbMediaId>
+        <ThumbMediaId><![CDATA[<%= content.media_id %>]]></ThumbMediaId>
       </Music>
     <% }else if(msgType === 'news') { %>
       <ArticleCount><%= content.length %></ArticleCount>
