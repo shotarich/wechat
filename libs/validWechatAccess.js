@@ -12,7 +12,7 @@ exports = module.exports = async function validWechatAccess(ctx, next) {
   const encryptoStr = sha1(str)
 
   if(encryptoStr !== signature) {
-    ctx.body = 'error'
+    ctx.body = 'error1'
     return
   }
 
