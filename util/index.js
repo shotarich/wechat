@@ -70,7 +70,7 @@ const saveTempMaterial = materialInfos => {
   }
 
   materialInfos = JSON.stringify(materialInfos)
-  return fs.promises.writeFileSync(temp_material_file_path, materialInfos, 'utf8')
+  return fs.promises.writeFile(temp_material_file_path, materialInfos, 'utf8')
 }
 
 module.exports = {
