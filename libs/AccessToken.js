@@ -57,21 +57,21 @@ class AccessToken {
       expires_in: Date.now() - 20 + resp.expires_in * 1000
     }
     this.access_token = access_token
+
+    this.setAccessToken()
   }
 
   isDisabled() {
-    const access_token_infos = JSON.parse(this.access_token)
+    const access_token = this.access_token
+    const access_token_infos = typeof access_token === 'string' ? JSON.parse(access_token) : access_token
     if(!access_token_infos || !access_token_infos.access_token || !access_token_infos.expires_in) {
       return true
     }
 
     const { expires_in } = access_token_infos
     const nowTimestamp = Date.now()
-    if(nowTimestamp > expires_in) {
-      return true
-    }
-
-    return false
+    
+    return nowTimestamp > expires_in
   }
 }
 
