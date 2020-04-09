@@ -5,6 +5,8 @@ const replyConfs = require('./wechat/replyConfig')
 const parseWechatReq = require('./libs/parseWechatReq')
 const validWechatAccess = require('./libs/validWechatAccess')
 
+const { genReplyXml } = require('./util')
+
 const app = new Koa()
 
 app.use(validWechatAccess)
@@ -15,16 +17,33 @@ app.use(async (ctx, next) => {
   await next()
 
   const wechat = new Wechat()
-  const autoReply = new AuotReply(ctx, next)
+  const wechatMsg = ctx.wechatMsg
+  if(wechatMsg.MsgType === 'text' && wechatMsg.Content === '2') {
+    const temp = await wechat.uploadTempMaterial('image', ('./files/image/1.png'))
 
-  const replies = replyConfs(wechat)
-  replies.text.forEach(item => {
-    autoReply.addMsgReply(item.msg, item.reply)
-  })
-  replies.event.forEach(item => {
-    autoReply.addEventReply(item.name, item.reply)
-  })
-  autoReply.reply()
+    console.log('temp', temp)
+
+    const content = {
+      media_id: temp.media_id
+    }
+    const xml = genReplyXml('image', content, wechatMsg)
+
+    console.log(xml)
+
+    // ctx.body = xml
+    // ctx.type = 'application/xml'
+    // ctx.status = 200
+  }
+  // const autoReply = new AuotReply(ctx, next)
+
+  // const replies = replyConfs(wechat)
+  // replies.text.forEach(item => {
+  //   autoReply.addMsgReply(item.msg, item.reply)
+  // })
+  // replies.event.forEach(item => {
+  //   autoReply.addEventReply(item.name, item.reply)
+  // })
+  // autoReply.reply()
 })
 
 app.use(parseWechatReq)
