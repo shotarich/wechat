@@ -10,4 +10,5 @@ module.exports = {
   api_access_token_path: '/cgi-bin/token?grant_type=client_credential',
   
   access_token_file_path: path.join(__dirname, '../config/access_token.json'),
+  temp_material_file_path: path.join(__dirname, '../config/material_infos.json'),
 }

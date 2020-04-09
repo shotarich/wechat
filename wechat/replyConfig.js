@@ -1,4 +1,7 @@
+const fs = require('fs')
 const path = require('path')
+const { temp_material_file_path } = require('../constants/wechat')
+const { isEnableTempMaterial, saveTempMaterial } = require('../util')
 
 module.exports = wechat => ({
   text: [
@@ -14,7 +17,25 @@ module.exports = wechat => ({
     {
       msg: '2',
       reply: async () => {
-        const tempMaterialInfos = await wechat.uploadTempMaterial('image', path.join(__dirname, '../files/image/1.png'))
+        let tempMaterialInfos = await fs.promises.readFile(temp_material_file_path, 'utf8').catch(err => {
+          console.log('获取临时素材信息出错, 对应的消息内容是2')
+          console.error(err)
+        })
+
+        if(tempMaterialInfos && typeof tempMaterialInfos === 'string') {
+          try {
+            tempMaterialInfos = JSON.parse(tempMaterialInfos)
+          }catch(e) {
+            tempMaterialInfos = await wechat.uploadTempMaterial('image', path.join(__dirname, '../files/image/1.png'))
+          }
+
+          if(!isEnableTempMaterial(tempMaterialInfos)) {
+            tempMaterialInfos = await wechat.uploadTempMaterial('image', path.join(__dirname, '../files/image/1.png'))
+            tempMaterialInfos.expires_in = Date.now()
+
+            saveTempMaterial(tempMaterialInfos)
+          }
+        }
 
         const reply = {
           msgType: 'image',
