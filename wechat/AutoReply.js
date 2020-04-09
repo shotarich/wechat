@@ -1,4 +1,4 @@
-const { genReplyXml } = require('../util')
+const { genReplyXml, types } = require('../util')
 
 const strategy = {
   default: {
@@ -40,7 +40,7 @@ class AutoReply {
     const reply = () => {
       const reply = replyFn()
 
-      if(this.isPromise(reply) || this.isAsyncFn(replyFn)) {
+      if(types.isPromise(reply) || types.isAsyncFunction(replyFn)) {
         reply.then(data => {
           this.fire(data)
         }).catch(err => {
@@ -76,14 +76,6 @@ class AutoReply {
     }else {
       this.fire(strategy.default)
     }
-  }
-
-  isPromise(v) {
-    return Object.prototype.toString.call(v) === '[object Promise]'
-  }
-
-  isAsyncFn(v) {
-    return Object.prototype.toString.call(v) === '[object AsyncFunction]'
   }
 }
 

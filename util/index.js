@@ -1,3 +1,4 @@
+const util = require('util')
 const crypto = require('crypto')
 const htmlparser2 = require('htmlparser2')
 const tpl = require('../template/tpl')
@@ -58,6 +59,7 @@ const genReplyXml = (msgType, content, formatedMsg) => {
 module.exports = {
   xml2Json,
   genReplyXml,
+  types: util.types,
   md5: str => encryptType('md5', str),
   sha1: str => encryptType('sha1', str)
 }
