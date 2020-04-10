@@ -1,7 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { temp_material_file_path } = require('../constants/wechat')
-const { isEnableTempMaterial, saveTempMaterial } = require('../util')
+const { isEnableTempMaterial, saveTempMaterial, getTempMaterial } = require('../util')
 
 module.exports = wechat => ({
   text: [
@@ -17,23 +16,29 @@ module.exports = wechat => ({
     {
       msg: '2',
       reply: async () => {
-        let tempMaterialInfos = await fs.promises.readFile(temp_material_file_path, 'utf8').catch(err => {
+        let allTempMaterialInfos = await getTempMaterial().catch(err => {
           console.log('获取临时素材信息出错, 对应的消息内容是2')
           console.error(err)
         })
+        let tempMaterialInfos = null
 
-        if(tempMaterialInfos && typeof tempMaterialInfos === 'string') {
+        if(allTempMaterialInfos && typeof allTempMaterialInfos === 'string') {
           try {
-            tempMaterialInfos = JSON.parse(tempMaterialInfos)
+            allTempMaterialInfos = JSON.parse(allTempMaterialInfos)
+            tempMaterialInfos = allTempMaterialInfos.find(item => item.msg === '2') || {}
           }catch(e) {
             tempMaterialInfos = await wechat.uploadTempMaterial('image', path.join(__dirname, '../files/image/1.png'))
           }
 
           if(!isEnableTempMaterial(tempMaterialInfos)) {
             tempMaterialInfos = await wechat.uploadTempMaterial('image', path.join(__dirname, '../files/image/1.png'))
-            tempMaterialInfos.expires_in = Date.now()
+            tempMaterialInfos.expires_in = Date.now() + 3600 * 1000 * 24 * 3
+            tempMaterialInfos.msg = '2'
 
-            saveTempMaterial(tempMaterialInfos)
+            await saveTempMaterial(tempMaterialInfos).catch(err => {
+              console.log('缓存临时素材id出错')
+              console.error(err)
+            })
           }
         }
 

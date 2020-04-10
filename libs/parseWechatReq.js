@@ -10,6 +10,6 @@ exports = module.exports = async (ctx, next) => {
     console.error(err)
   })
   
-  ctx.wechatMsg = xml2Json(data)
+  ctx.wechatBody = xml2Json(data)
   await next()
 }

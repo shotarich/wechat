@@ -58,25 +58,57 @@ const genReplyXml = (msgType, content, formatedMsg) => {
   return tpl.compile(replyJson)
 }
 
+const isEmptyObj = v => {
+  return Boolean(Object.keys(v).length)
+}
+
 const isEnableTempMaterial = materialInfos => {
   const now = Date.now()
 
-  return Boolean(materialInfos.expires_in) && now < materialInfos.expires_in
+  return !isEmptyObj(materialInfos) && Boolean(materialInfos.expires_in) && now < materialInfos.expires_in
 }
 
-const saveTempMaterial = materialInfos => {
-  if(!materialInfos && typeof materialInfos === 'object') {
+const getTempMaterial = () => {
+  return fs.promises.readFile(temp_material_file_path, 'utf8')
+}
+
+const saveTempMaterial = async materialInfos => {
+  if(!materialInfos && typeof materialInfos !== 'object') {
     throw Error('请传入要写入的临时素材信息')
+  }
+
+  let allTempMaterialInfos = await getTempMaterial().catch(err => {
+    console.log('在存入临时素材时读取临时素材信息文件出错')
+    console.error(err)
+  })
+
+  try {
+    allTempMaterialInfos = JSON.parse(allTempMaterialInfos)
+
+    if(!Array.isArray(allTempMaterialInfos)) {
+      allTempMaterialInfos = []
+    }
+  }catch(e) {
+    allTempMaterialInfos = []
+  }
+  
+  const targetIndex = allTempMaterialInfos.findIndex(item => item.msg === materialInfos.msg)
+  if(~target) {
+    allTempMaterialInfos[targetIndex] = materialInfos
+  }else {
+    allTempMaterialInfos.push(materialInfos)
   }
 
   materialInfos = JSON.stringify(materialInfos)
   return fs.promises.writeFile(temp_material_file_path, materialInfos, 'utf8')
 }
 
+
 module.exports = {
   xml2Json,
   genReplyXml,
   types: util.types,
+  getTempMaterial,
   saveTempMaterial,
   isEnableTempMaterial,
   md5: str => encryptType('md5', str),

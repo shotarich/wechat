@@ -61,6 +61,7 @@ class AccessToken {
       access_token: resp.access_token,
       expires_in: Date.now() - 20 + resp.expires_in * 1000
     }
+    console.log('获取到的access_token', access_token)
 
     this.setAccessToken(access_token)
 

@@ -8,31 +8,26 @@ const validWechatAccess = require('./libs/validWechatAccess')
 const { genReplyXml } = require('./util')
 
 const app = new Koa()
+const wechat = new Wechat()
 
 app.use(validWechatAccess)
-
 app.use(async (ctx, next) => {
   if(ctx.method.toLowerCase() !== 'post') return
 
   await next()
 
-  const wechat = new Wechat()
-  const wechatMsg = ctx.wechatMsg
-  if(wechatMsg.MsgType === 'text' && wechatMsg.Content === '2') {
-    const temp = await wechat.uploadTempMaterial('image', ('./files/image/1.png'))
-
-    console.log('temp', temp)
+  const wechatBody = ctx.wechatBody
+  if(wechatBody.MsgType === 'text' && wechatBody.Content === '2') {
+    const temp = await wechat.uploadTempMaterial('image', './files/image/1.png')
 
     const content = {
       media_id: temp.media_id
     }
-    const xml = genReplyXml('image', content, wechatMsg)
+    const xml = genReplyXml('image', content, wechatBody)
 
-    console.log(xml)
-
-    // ctx.body = xml
-    // ctx.type = 'application/xml'
-    // ctx.status = 200
+    ctx.body = xml
+    ctx.type = 'application/xml'
+    ctx.status = 200
   }
   // const autoReply = new AuotReply(ctx, next)
 

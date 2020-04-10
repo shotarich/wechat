@@ -14,7 +14,7 @@ const strategy = {
 class AutoReply {
   constructor(ctx) {
     this.ctx = ctx
-    this.wechatMsg = ctx.wechatMsg
+    this.wechatBody = ctx.wechatBody
   }
   
   addMsgReply(msg, replyFn) {
@@ -61,12 +61,12 @@ class AutoReply {
     const ctx = this.ctx
     ctx.status = 200
     ctx.type = 'application/xml'
-    ctx.body = genReplyXml(reply.msgType, reply.content, this.wechatMsg)
+    ctx.body = genReplyXml(reply.msgType, reply.content, this.wechatBody)
   }
 
   reply() {
     const ctx = this.ctx
-    const { MsgType, Content, Event } = this.wechatMsg
+    const { MsgType, Content, Event } = this.wechatBody
     const replyObj = strategy[MsgType]
 
     if(MsgType === 'text' && replyObj[Content]) {

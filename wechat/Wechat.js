@@ -4,7 +4,7 @@ const config = require('../constants/wechat')
 const AccessToken = require('../libs/AccessToken')
 
 class Wechat extends AccessToken {
-  constructor(ctx, next) {
+  constructor() {
     super()
   }
 
@@ -28,6 +28,8 @@ class Wechat extends AccessToken {
         console.log('临时素材新增失败')
         console.error(err)
       })
+
+      console.log('上传临时素材', uploadRet)
 
       return uploadRet
     }catch(e) {
