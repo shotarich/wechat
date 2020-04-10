@@ -26,9 +26,8 @@ module.exports = wechat => ({
             media_id: tempMaterialInfos.media_id
           }
         }
-        console.log('生成2的回复是', reply)
 
-        return Promise.resolve(reply)
+        return reply
       }
     },
     {
@@ -47,8 +46,6 @@ module.exports = wechat => ({
             vedio_description: '视频描述'
           }
         }
-        
-        console.log('生成3的回复是', reply)
 
         return reply
       }
