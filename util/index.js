@@ -105,7 +105,7 @@ const saveTempMaterial = async materialInfos => {
   return fs.promises.writeFile(temp_material_file_path, materialInfos, 'utf8')
 }
 
-const genTempMaterialInfos = async (msg, materialType, materialPath) => {
+const genTempMaterialInfos = async (msg, materialType, materialPath, wechat) => {
   let allTempMaterialInfos = await getTempMaterial().catch(err => {
     console.log('获取临时素材信息出错, 对应的消息内容是:' + msg)
     console.error(err)

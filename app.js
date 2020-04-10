@@ -10,7 +10,7 @@ const wechat = new Wechat()
 
 const autoReply = new AuotReply()
 
-const replies = replyConfs(wechat)
+const replies = replyConfs()
 replies.text.forEach(item => {
   autoReply.addMsgReply(item.msg, item.reply)
 })
