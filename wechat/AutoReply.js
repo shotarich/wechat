@@ -1,4 +1,4 @@
-const { genReplyXml, types } = require('../util')
+const { genReplyXml } = require('../util')
 
 const strategy = {
   default: {
