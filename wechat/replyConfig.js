@@ -25,11 +25,13 @@ module.exports = wechat => ({
           allTempMaterialInfos = JSON.parse(allTempMaterialInfos)
           tempMaterialInfos = allTempMaterialInfos.find(item => item.msg === '2') || {}
         }catch(e) {
+          console.log('在catch里面上传的素材')
           tempMaterialInfos = await wechat.uploadTempMaterial('image', path.join(__dirname, '../files/image/1.png'))
           tempMaterialInfos.msg = '2'
         }
         
         if(!isEnableTempMaterial(tempMaterialInfos)) {
+          console.log('在isEnableTempMaterial里面上传的素材')
           tempMaterialInfos = await wechat.uploadTempMaterial('image', path.join(__dirname, '../files/image/1.png'))
           tempMaterialInfos.msg = '2'
 

@@ -61,7 +61,7 @@ const genReplyXml = (msgType, content, formatedMsg) => {
 }
 
 const isEmptyObj = v => {
-  return Boolean(Object.keys(v).length)
+  return !Boolean(Object.keys(v).length)
 }
 
 const isEnableTempMaterial = materialInfos => {
