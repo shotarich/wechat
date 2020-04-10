@@ -1,5 +1,5 @@
 const path = require('path')
-const { isEnableTempMaterial, saveTempMaterial, getTempMaterial } = require('../util')
+const { isEnableTempMaterial, saveTempMaterial, getTempMaterial, genTempMaterialInfos } = require('../util')
 
 module.exports = wechat => ({
   text: [
@@ -15,29 +15,10 @@ module.exports = wechat => ({
     {
       msg: '2',
       reply: async () => {
-        let allTempMaterialInfos = await getTempMaterial().catch(err => {
-          console.log('获取临时素材信息出错, 对应的消息内容是2')
+        const tempMaterialInfos = await genTempMaterialInfos('2', 'image', path.join(__dirname, '../files/image/1.png')).catch(err => {
+          console.log('生成素材详情失败')
           console.error(err)
         })
-        let tempMaterialInfos = null
-
-        try {
-          allTempMaterialInfos = JSON.parse(allTempMaterialInfos)
-          tempMaterialInfos = allTempMaterialInfos.find(item => item.msg === '2') || {}
-        }catch(e) {
-          tempMaterialInfos = await wechat.uploadTempMaterial('image', path.join(__dirname, '../files/image/1.png'))
-          tempMaterialInfos.msg = '2'
-        }
-        
-        if(!isEnableTempMaterial(tempMaterialInfos)) {
-          tempMaterialInfos = await wechat.uploadTempMaterial('image', path.join(__dirname, '../files/image/1.png'))
-          tempMaterialInfos.msg = '2'
-
-          await saveTempMaterial(tempMaterialInfos).catch(err => {
-            console.log('缓存临时素材id出错')
-            console.error(err)
-          })
-        }
 
         const reply = {
           msgType: 'image',
@@ -45,7 +26,6 @@ module.exports = wechat => ({
             media_id: tempMaterialInfos.media_id
           }
         }
-        
         console.log('生成2的回复是', reply)
 
         return Promise.resolve(reply)
@@ -54,27 +34,8 @@ module.exports = wechat => ({
     {
       msg: '3',
       reply: async () => {
-        let allTempMaterialInfos = await getTempMaterial().catch(err => {
-          console.log('获取临时素材信息出错, 对应的消息内容是3')
-          console.error(err)
-        })
-        let tempMaterialInfos = null
-
-        try {
-          allTempMaterialInfos = JSON.parse(allTempMaterialInfos)
-          tempMaterialInfos = allTempMaterialInfos.find(item => item.msg === '3') || {}
-        }catch(e) {
-          tempMaterialInfos = await wechat.uploadTempMaterial('video', path.join(__dirname, '../files/vedio/1.mp4'))
-          tempMaterialInfos.msg = '3'
-        }
-        
-        if(!isEnableTempMaterial(tempMaterialInfos)) {
-          tempMaterialInfos = await wechat.uploadTempMaterial('video', path.join(__dirname, '../files/vedio/1.mp4'))
-          tempMaterialInfos.msg = '3'
-        }
-
-        await saveTempMaterial(tempMaterialInfos).catch(err => {
-          console.log('缓存临时素材id出错')
+        const tempMaterialInfos = await genTempMaterialInfos('3', 'video', path.join(__dirname, '../files/vedio/1.mp4')).catch(err => {
+          console.log('生成素材详情失败')
           console.error(err)
         })
 
@@ -89,7 +50,7 @@ module.exports = wechat => ({
         
         console.log('生成3的回复是', reply)
 
-        return Promise.resolve(reply)
+        return reply
       }
     }
   ],

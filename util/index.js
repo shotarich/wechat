@@ -67,7 +67,7 @@ const isEmptyObj = v => {
 const isEnableTempMaterial = materialInfos => {
   const now = Date.now()
 
-  return !isEmptyObj(materialInfos) && now < materialInfos.created_at * 1000 + 3600 * 1000 * 24 * 3
+  return materialInfos && !isEmptyObj(materialInfos) && now < materialInfos.created_at * 1000 + 3600 * 1000 * 24 * 3
 }
 
 const getTempMaterial = () => {
@@ -105,6 +105,32 @@ const saveTempMaterial = async materialInfos => {
   return fs.promises.writeFile(temp_material_file_path, materialInfos, 'utf8')
 }
 
+const genTempMaterialInfos = async (msg, materialType, materialPath) => {
+  let allTempMaterialInfos = await getTempMaterial().catch(err => {
+    console.log('获取临时素材信息出错, 对应的消息内容是:' + msg)
+    console.error(err)
+  })
+  let tempMaterialInfos = null
+
+  try {
+    allTempMaterialInfos = JSON.parse(allTempMaterialInfos)
+    tempMaterialInfos = allTempMaterialInfos.find(item => item.msg === msg) || null
+  }catch(e) {
+    tempMaterialInfos = null
+  }
+  
+  if(!isEnableTempMaterial(tempMaterialInfos)) {
+    tempMaterialInfos = await wechat.uploadTempMaterial(materialType, materialPath)
+    tempMaterialInfos.msg = msg
+  }
+
+  await saveTempMaterial(tempMaterialInfos).catch(err => {
+    console.log('缓存临时素材id时出错')
+    console.error(err)
+  })
+
+  return tempMaterialInfos
+}
 
 module.exports = {
   types,
@@ -112,6 +138,7 @@ module.exports = {
   genReplyXml,
   getTempMaterial,
   saveTempMaterial,
+  genTempMaterialInfos,
   isEnableTempMaterial,
   md5: str => encryptType('md5', str),
   sha1: str => encryptType('sha1', str)
