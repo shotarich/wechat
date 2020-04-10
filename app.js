@@ -5,8 +5,6 @@ const replyConfs = require('./wechat/replyConfig')
 const parseWechatReq = require('./libs/parseWechatReq')
 const validWechatAccess = require('./libs/validWechatAccess')
 
-const { genReplyXml } = require('./util')
-
 const app = new Koa()
 const wechat = new Wechat()
 
@@ -26,6 +24,7 @@ app.use(async (ctx, next) => {
 
   await next()
   await autoReply.reply(ctx)
+  console.log(ctx.body)
 })
 
 app.use(parseWechatReq)

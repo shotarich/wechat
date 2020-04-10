@@ -18,7 +18,7 @@ const tpl = heredoc(() => {/*
       <Voice>
         <MediaId><![CDATA[<%= content.media_id %>]]></MediaId>
       </Voice>
-    <% }else if(msgType === 'vedio') { %>
+    <% }else if(msgType === 'video') { %>
       <Video>
         <MediaId><![CDATA[<%= content.media_id %>]]></MediaId>
         <Title><![CDATA[<%= content.vedio_title %>]]></Title>
