@@ -25,22 +25,7 @@ app.use(async (ctx, next) => {
   if(ctx.method.toLowerCase() !== 'post') return
 
   await next()
-
-  // const wechatBody = ctx.wechatBody
-  // if(wechatBody.MsgType === 'text' && wechatBody.Content === '2') {
-  //   const temp = await wechat.uploadTempMaterial('image', './files/image/1.png')
-
-  //   const content = {
-  //     media_id: temp.media_id
-  //   }
-  //   const xml = genReplyXml('image', content, wechatBody)
-
-  //   ctx.body = xml
-  //   ctx.type = 'application/xml'
-  //   ctx.status = 200
-  // }
-  autoReply.reply(ctx)
-  console.log('ctx.body ->', ctx.body)
+  await autoReply.reply(ctx)
 })
 
 app.use(parseWechatReq)

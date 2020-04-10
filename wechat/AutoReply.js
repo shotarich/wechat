@@ -63,6 +63,7 @@ class AutoReply {
     let xml = ''
 
     if(MsgType === 'text' && replyObj[Content]) {
+      Object.prototype.toString.call()
       xml = await replyObj[Content](wechatBody)
     }
 
