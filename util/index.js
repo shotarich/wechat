@@ -9,6 +9,8 @@ const encryptType = (type, str) => {
   return crypto.createHash(type).update(str).digest('hex').toLowerCase()
 }
 
+const types = util.types
+
 const xml2Json = xml => {
   const json = {}
   let curKey = ''
@@ -65,7 +67,7 @@ const isEmptyObj = v => {
 const isEnableTempMaterial = materialInfos => {
   const now = Date.now()
 
-  return !isEmptyObj(materialInfos) && Boolean(materialInfos.expires_in) && now < materialInfos.expires_in
+  return !isEmptyObj(materialInfos) && now < materialInfos.created_at * 1000 + 3600 * 1000 * 24 * 3
 }
 
 const getTempMaterial = () => {
@@ -74,7 +76,7 @@ const getTempMaterial = () => {
 
 const saveTempMaterial = async materialInfos => {
   if(!materialInfos && typeof materialInfos !== 'object') {
-    throw Error('请传入要写入的临时素材信息')
+    return Promise.reject('请传入要写入的临时素材信息')
   }
 
   let allTempMaterialInfos = await getTempMaterial().catch(err => {
@@ -93,21 +95,21 @@ const saveTempMaterial = async materialInfos => {
   }
   
   const targetIndex = allTempMaterialInfos.findIndex(item => item.msg === materialInfos.msg)
-  if(~target) {
+  if(~targetIndex) {
     allTempMaterialInfos[targetIndex] = materialInfos
   }else {
     allTempMaterialInfos.push(materialInfos)
   }
 
-  materialInfos = JSON.stringify(materialInfos)
+  materialInfos = JSON.stringify(allTempMaterialInfos, null, 2)
   return fs.promises.writeFile(temp_material_file_path, materialInfos, 'utf8')
 }
 
 
 module.exports = {
+  types,
   xml2Json,
   genReplyXml,
-  types: util.types,
   getTempMaterial,
   saveTempMaterial,
   isEnableTempMaterial,

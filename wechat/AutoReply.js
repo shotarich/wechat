@@ -12,9 +12,7 @@ const strategy = {
 }
 
 class AutoReply {
-  constructor(ctx) {
-    this.ctx = ctx
-    this.wechatBody = ctx.wechatBody
+  constructor() {
   }
   
   addMsgReply(msg, replyFn) {
@@ -37,45 +35,49 @@ class AutoReply {
       throw Error('请传入函数作为回复内容')
     }
 
-    const reply = () => {
-      const reply = replyFn()
+    const genXml = async wechatBody => {
+      let replyContent = null
 
-      if(types.isPromise(reply) || types.isAsyncFunction(replyFn)) {
-        reply.then(data => {
-          this.fire(data)
-        }).catch(err => {
+      try{
+        replyContent = await replyFn().catch(err => {
           console.log('设置回复内容出错')
           console.error(err)
         })
-
-        return
+      }catch(e) {
+        replyContent = replyFn()
       }
-      
-      return this.fire(reply)
+
+      if(!replyContent) return null
+
+      return genReplyXml(replyContent.msgType, replyContent.content, wechatBody)
     }
 
-    Object.assign(strategy[type], { [msg]: reply })
+    Object.assign(strategy[type], { [msg]: genXml })
   }
 
-  fire(reply) {
-    const ctx = this.ctx
-    ctx.status = 200
-    ctx.type = 'application/xml'
-    ctx.body = genReplyXml(reply.msgType, reply.content, this.wechatBody)
-  }
-
-  reply() {
-    const ctx = this.ctx
-    const { MsgType, Content, Event } = this.wechatBody
+  async reply(ctx) {
+    const wechatBody = ctx.wechatBody
+    const { MsgType, Content, Event } = wechatBody
     const replyObj = strategy[MsgType]
 
+    let xml = ''
+
     if(MsgType === 'text' && replyObj[Content]) {
-      replyObj[Content](ctx)
-    }else if(MsgType === 'event' && replyObj[Event]) {
-      replyObj[Event](ctx)
-    }else {
-      this.fire(strategy.default)
+      xml = await replyObj[Content](wechatBody)
     }
+
+    if(MsgType === 'event' && replyObj[Event]) {
+      xml = await replyObj[Event](wechatBody)
+    }
+
+    if(!xml) {
+      const defaultReply = strategy.default
+      xml = genReplyXml(defaultReply.msgType, defaultReply.content, wechatBody)
+    }
+
+    ctx.status = 200
+    ctx.type = 'application/xml'
+    ctx.body = xml
   }
 }
 

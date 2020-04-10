@@ -29,11 +29,15 @@ class Wechat extends AccessToken {
         console.error(err)
       })
 
-      console.log('上传临时素材', uploadRet)
+      if(uploadRet.created_at && uploadRet.created_at.toString().length < 13) {
+        uploadRet.created_at *= 1000 
+      }
+      console.log('上传了一次素材')
 
       return uploadRet
     }catch(e) {
-      throw Error(e)
+      console.log('获取access_token出错')
+      console.error(e)
     }
   }
 }
