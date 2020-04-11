@@ -1,7 +1,7 @@
 const path = require('path')
 const { genTempMaterialInfos } = require('../util')
 
-module.exports = wechat => {
+module.exports = () => {
   return {
     text: [
       {
@@ -17,7 +17,7 @@ module.exports = wechat => {
         msg: '2',
         reply: async () => {
           const filePath = path.join(__dirname, '../files/image/1.png')
-          const tempMaterialInfos = await genTempMaterialInfos('2', 'image', filePath, wechat).catch(err => {
+          const tempMaterialInfos = await genTempMaterialInfos('2', 'image', filePath).catch(err => {
             console.log('生成素材详情失败')
             console.error(err)
           })
@@ -36,7 +36,7 @@ module.exports = wechat => {
         msg: '3',
         reply: async () => {
           const filePath = path.join(__dirname, '../files/vedio/1.mp4')
-          const tempMaterialInfos = await genTempMaterialInfos('3', 'video', filePath, wechat).catch(err => {
+          const tempMaterialInfos = await genTempMaterialInfos('3', 'video', filePath).catch(err => {
             console.log('生成素材详情失败')
             console.error(err)
           })

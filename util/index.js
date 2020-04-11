@@ -1,8 +1,9 @@
 const fs = require('fs')
 const util = require('util')
 const crypto = require('crypto')
-const htmlparser2 = require('htmlparser2')
 const tpl = require('../template/tpl')
+const htmlparser2 = require('htmlparser2')
+const Material = require('../wechat/Material')
 const { temp_material_file_path } = require('../constants/wechat')
 
 const encryptType = (type, str) => {
@@ -105,7 +106,9 @@ const saveTempMaterial = async materialInfos => {
   return fs.promises.writeFile(temp_material_file_path, materialInfos, 'utf8')
 }
 
-const genTempMaterialInfos = async (msg, materialType, materialPath, wechat) => {
+const genTempMaterialInfos = async (msg, materialType, materialPath) => {
+  const material = new Material()
+
   let allTempMaterialInfos = await getTempMaterial().catch(err => {
     console.log('获取临时素材信息出错, 对应的消息内容是:' + msg)
     console.error(err)
@@ -120,7 +123,7 @@ const genTempMaterialInfos = async (msg, materialType, materialPath, wechat) => 
   }
   
   if(!isEnableTempMaterial(tempMaterialInfos)) {
-    tempMaterialInfos = await wechat.uploadTempMaterial(materialType, materialPath)
+    tempMaterialInfos = await material.uploadTempMaterial(materialType, materialPath)
     tempMaterialInfos.msg = msg
   }
 

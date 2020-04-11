@@ -6,11 +6,9 @@ const parseWechatReq = require('./libs/parseWechatReq')
 const validWechatAccess = require('./libs/validWechatAccess')
 
 const app = new Koa()
-const wechat = new Wechat()
-
 const autoReply = new AuotReply()
 
-const replies = replyConfs(wechat)
+const replies = replyConfs()
 replies.text.forEach(item => {
   autoReply.addMsgReply(item.msg, item.reply)
 })
@@ -24,7 +22,6 @@ app.use(async (ctx, next) => {
 
   await next()
   await autoReply.reply(ctx)
-  console.log(ctx.body)
 })
 
 app.use(parseWechatReq)
