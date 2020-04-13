@@ -1,3 +1,4 @@
+const replyConfs = require('./replyConf')
 const { genReplyXml } = require('../../util')
 
 const strategy = {
@@ -13,6 +14,17 @@ const strategy = {
 
 class AutoReply {
   constructor() {
+    this.init()
+  }
+
+  init() {
+    const replies = replyConfs()
+    replies.text.forEach(item => {
+      this.addMsgReply(item.msg, item.reply)
+    })
+    replies.event.forEach(item => {
+      this.addEventReply(item.name, item.reply)
+    })
   }
   
   addMsgReply(msg, replyFn) {
