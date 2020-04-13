@@ -1,6 +1,6 @@
 const fs = require('fs')
 const { isEmptyObj } = require('../util')
-const request = require('request-promise')
+const request = require('request-promise-native')
 const config = require('../constants/wechat')
 const AccessToken = require('../libs/AccessToken')
 

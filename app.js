@@ -1,4 +1,5 @@
 const Koa = require('koa')
+// const Menu = require('./wechat/menu/Menu')
 const AuotReply = require('./wechat/reply/Reply')
 const replyConfs = require('./wechat/reply/replyConf')
 const parseWechatReq = require('./libs/parseWechatReq')
@@ -6,6 +7,7 @@ const validWechatAccess = require('./libs/validWechatAccess')
 
 const app = new Koa()
 const autoReply = new AuotReply()
+// const menu = new Menu()
 
 const replies = replyConfs()
 replies.text.forEach(item => {

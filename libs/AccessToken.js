@@ -2,7 +2,7 @@
  * 此模块为AccessToken类, 用来获取/更新access_token
  */
 const fs = require('fs')
-const request = require('request-promise')
+const request = require('request-promise-native')
 const config = require('../constants/wechat')
 const { access_token_file_path } = require('../constants/wechat')
 
