@@ -1,5 +1,5 @@
 const path = require('path')
-const Material = require('../wechat/Material')
+const Material = require('../Material')
 
 module.exports = () => {
   const material = new Material()

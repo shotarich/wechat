@@ -8,6 +8,7 @@ module.exports = {
   api_prefix_url: 'https://api.weixin.qq.com',
   api_upload_temp_material_path: '/cgi-bin/media/upload',
   api_access_token_path: '/cgi-bin/token?grant_type=client_credential',
+  api_create_menu_path: '/cgi-bin/menu/create',
   
   access_token_file_path: path.join(__dirname, '../config/access_token.json'),
   temp_material_file_path: path.join(__dirname, '../config/material_infos.json'),
