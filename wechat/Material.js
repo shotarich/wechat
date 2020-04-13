@@ -1,7 +1,7 @@
 const fs = require('fs')
+const { isEmptyObj } = require('../util')
 const request = require('request-promise')
 const config = require('../constants/wechat')
-const { isEmptyObj } = require('../util')
 const AccessToken = require('../libs/AccessToken')
 
 class Material extends AccessToken{

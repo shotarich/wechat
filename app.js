@@ -1,5 +1,4 @@
 const Koa = require('koa')
-const Wechat = require('./wechat/Wechat')
 const AuotReply = require('./wechat/AutoReply')
 const replyConfs = require('./wechat/replyConfig')
 const parseWechatReq = require('./libs/parseWechatReq')
