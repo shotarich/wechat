@@ -18,7 +18,7 @@ module.exports = () => {
       {
         msg: '2',
         reply: async () => {
-          const filePath = path.join(__dirname, '../files/image/1.png')
+          const filePath = path.join(__dirname, '../../files/image/1.png')
           const tempMaterialInfos = await material.genTempMaterialInfos('2', 'image', filePath).catch(err => {
             console.log('生成素材详情失败')
             console.error(err)
@@ -37,7 +37,7 @@ module.exports = () => {
       {
         msg: '3',
         reply: async () => {
-          const filePath = path.join(__dirname, '../files/vedio/1.mp4')
+          const filePath = path.join(__dirname, '../../files/vedio/1.mp4')
           const tempMaterialInfos = await material.genTempMaterialInfos('3', 'video', filePath).catch(err => {
             console.log('生成素材详情失败')
             console.error(err)

@@ -1,12 +1,10 @@
 const fs = require('fs')
 const { isEmptyObj } = require('../util')
-const request = require('request-promise-native')
+const request = require('../libs/request')
 const config = require('../constants/wechat')
-const AccessToken = require('../libs/AccessToken')
 
-class Material extends AccessToken{
+class Material{
   constructor() {
-    super()
   }
 
   async genTempMaterialInfos(msg, materialType, materialPath) {  
@@ -41,14 +39,18 @@ class Material extends AccessToken{
       media: fs.createReadStream(filePath)
     }
 
-    const access_token = await this.getAccessToken()
-
     try{
-      const token = access_token.access_token
       const { api_prefix_url, api_upload_temp_material_path } = config
-      const url = `${api_prefix_url + api_upload_temp_material_path}?access_token=${token}&type=${msgType}`
+      const opts = {
+        url: api_prefix_url + api_upload_temp_material_path,
+        attachToken: true,
+        formData,
+        qs: {
+          type: msgType
+        }
+      }
 
-      const uploadRet =  await this._upload(url, formData)
+      const uploadRet =  await this._upload(opts)
       console.log('上传了一次临时素材')
 
       if(uploadRet && uploadRet.created_at.toString().length < 13) {
@@ -103,13 +105,13 @@ class Material extends AccessToken{
     return materialInfos && !isEmptyObj(materialInfos) && now < materialInfos.created_at * 1000 + 3600 * 1000 * 24 * 3
   }
 
-  async _upload(url, formData) {
-    const uploadRet = await request({
-      url,
-      formData,
+  async _upload(ops = {}) {
+    ops = {
+      ...ops,
       method: 'post',
       json: true
-    }).catch(err => {
+    }
+    const uploadRet = await request(ops).catch(err => {
       console.log('素材上传失败')
       console.error(err)
     })
