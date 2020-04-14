@@ -1,31 +1,29 @@
 const menuConf = require('./menuConf')
-const request = require('request-promise-native')
-const AccessToken = require('../../libs/AccessToken')
+const request = require('../../libs/request')
 const { api_prefix_url, api_create_menu_path } = require('../../constants/wechat')
 
-class Menu extends AccessToken {
+class Menu{
   constructor() {
-    super()
-
     this.init()
   }
 
   async init() {
-    const access_token = await this.getAccessToken().catch(e => console.log(e))
-
     try {
-      const url = `${api_prefix_url + api_create_menu_path}?access_token=${access_token.access_token}`
-      await this.createMenu(url, menuConf)
+      const opts = {
+        url: api_prefix_url + api_create_menu_path,
+        attachToken: true,
+        body: menuConf,
+      }
+      await this.createMenu(opts)
     }catch(e) {
       console.log('创建菜单时获取access_token失败')
       console.error(e);
     }
   }
 
-  async createMenu(url, menu) {
+  async createMenu(opts) {
     const createMenuRet = await request({
-      url,
-      body: menu,
+      ...opts,
       method: 'post',
       json: true
     }).catch(err => {
