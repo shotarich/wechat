@@ -102,7 +102,7 @@ class Material{
   isEnableTempMaterial(materialInfos) {
     const now = Date.now()
 
-    return materialInfos && !isEmptyObj(materialInfos) && now < materialInfos.created_at * 1000 + 3600 * 1000 * 24 * 3
+    return materialInfos && !isEmptyObj(materialInfos) && now < materialInfos.created_at + 3600 * 1000 * 24 * 3
   }
 
   async _upload(ops = {}) {
