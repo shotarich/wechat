@@ -12,8 +12,6 @@ exports = module.exports = async (ctx, next) => {
     console.info('获取微信请求body出错')
     console.error(err)
   })
-  
-  console.log('微信的请求', data)
 
   let wechatBody = {}
   if(headers['content-type'].includes('xml')) {
@@ -21,6 +19,8 @@ exports = module.exports = async (ctx, next) => {
   }else if(headers['content-type'].includes('json')) {
     wechatBody = typeof data === 'string' ? JSON.parse(data) : {}
   }
+
+  console.log('微信的请求', wechatBody)
 
   ctx.wechatBody = wechatBody
   await next()

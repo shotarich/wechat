@@ -8,7 +8,7 @@ class Material{
   }
 
   async genTempMaterialInfos(msg, materialType, materialPath) {  
-    let allTempMaterialInfos = await this.getTempMaterial().catch(err => {
+    let allTempMaterialInfos = await this.getTempMaterialInfos().catch(err => {
       console.log('获取临时素材信息出错, 对应的消息内容是:' + msg)
       console.error(err)
     })
@@ -64,7 +64,7 @@ class Material{
     }
   }
 
-  getTempMaterial() {
+  getTempMaterialInfos() {
     return fs.promises.readFile(config.temp_material_file_path, 'utf8')
   }
   
@@ -73,7 +73,7 @@ class Material{
       return Promise.reject('请传入要写入的临时素材信息')
     }
 
-    let allTempMaterialInfos = await this.getTempMaterial().catch(err => {
+    let allTempMaterialInfos = await this.getTempMaterialInfos().catch(err => {
       console.log('在存入临时素材时读取临时素材信息文件出错')
       console.error(err)
     })

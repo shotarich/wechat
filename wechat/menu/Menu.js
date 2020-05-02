@@ -31,7 +31,7 @@ class Menu{
       console.error(err)
     })
 
-    if(createMenuRet && Number(createMenuRet.errcode) === 0) {
+    if(createMenuRet && Number(createMenuRet.errcode) !== 0) {
       console.log('创建自定义菜单失败, 请求返回:' + createMenuRet.errmsg)
       return null
     }
