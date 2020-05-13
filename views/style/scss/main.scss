@@ -1,1 +1,14 @@
 @import "./base.scss";
+
+.personage-list {
+  flex-wrap: wrap;
+
+  .personage-item-group {
+    width: 100%;
+    margin-bottom: 36px;
+
+    img {
+      width: 90%;
+    }
+  }
+}

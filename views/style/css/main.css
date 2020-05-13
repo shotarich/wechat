@@ -52,3 +52,21 @@ html table {
   display: flex;
   justify-content: center;
 }
+
+.flex-y-center {
+  display: flex;
+  align-items: center;
+}
+
+.personage-list {
+  flex-wrap: wrap;
+}
+
+.personage-list .personage-item-group {
+  width: 100%;
+  margin-bottom: 36px;
+}
+
+.personage-list .personage-item-group img {
+  width: 90%;
+}
