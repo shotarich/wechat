@@ -1,0 +1,2 @@
+@import "./reset.min";
+.flex{display:flex}.flex-x-center{display:flex;justify-content:center}.flex-y-center{display:flex;align-items:center}.flex-between{display:flex;justify-content:space-between}.flex-around{display:flex;justify-content:space-around}
