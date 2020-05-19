@@ -1,3 +1,4 @@
+const fs = require('fs')
 const Koa = require('koa')
 const path = require('path')
 const views =  require('koa-views')
@@ -17,7 +18,19 @@ app.use(views(path.join(__dirname, './views'), {
 
 app.use(async (ctx, next) => {
   if(ctx.originalUrl === '/wechat') {
-    await ctx.render('index')
+    // await ctx.render('index')
+    const imgs = await fs.promises.readdir('./views/imgs/')
+    const list = imgs.map(item => {
+      const [address, age] = item.split('.')[0].split('-')
+      return {
+        age,
+        address,
+        src: `./imgs/${item}`
+      }
+    })
+
+    await ctx.render('index', {list})
+    console.log(list)
   }else {
     await next()
   }

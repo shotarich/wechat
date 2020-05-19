@@ -4,8 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link rel="stylesheet" href="./style/css/main.min.css">
 </head>
 <body>
-  <h1>hi, ejs</h1>
+  <div id="root">
+    <ul class="flex personage-list">
+      <% list.forEach(item => { %>
+      <li class="flex-x-center personage-item-group">
+        <img src="<%= item.src %>" alt="">
+        <div class="personage-desc flex-between">
+          <span><%= item.address %></span>
+          <span><%= item.age %></span>
+        </div>
+      </li>
+      <% }) %>
+    </ul>
+  </div>
 </body>
 </html>
