@@ -1,7 +1,9 @@
 const fs = require('fs')
 const Koa = require('koa')
 const path = require('path')
+const util = require('./util')
 const views =  require('koa-views')
+const koaStatic = require('koa-static')
 const Menu = require('./wechat/menu/Menu')
 const AuotReply = require('./wechat/reply/Reply')
 const parseWechatReq = require('./libs/parseWechatReq')
@@ -10,6 +12,9 @@ const validWechatAccess = require('./libs/validWechatAccess')
 const app = new Koa()
 const autoReply = new AuotReply()
 const menu = new Menu()
+
+const staticPath = path.join(__dirname, './views')
+app.use(koaStatic(staticPath))
 
 // 加载模板引擎
 app.use(views(path.join(__dirname, './views'), {
@@ -25,11 +30,15 @@ app.use(async (ctx, next) => {
       return {
         age,
         address,
-        src: `./imgs/${item}`
+        src: `/imgs/${item}`
       }
     })
 
-    await ctx.render('index', {list})
+    const renderData = {
+      list,
+      cssPath: util.genAbsolutePath(path.join(__dirname, 'style/css/main.min.css'))
+    }
+    await ctx.render('index', renderData)
     console.log(list)
   }else {
     await next()

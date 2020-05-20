@@ -1,7 +1,9 @@
 const util = require('util')
+const path = require('path')
 const crypto = require('crypto')
 const tpl = require('../template/tpl')
 const htmlparser2 = require('htmlparser2')
+const WEBSITE_CONF = require('../constants/website')
 
 const encryptType = (type, str) => {
   return crypto.createHash(type).update(str).digest('hex').toLowerCase()
@@ -62,11 +64,22 @@ const isEmptyObj = v => {
   return !Boolean(Object.keys(v).length)
 }
 
+const genAbsolutePath = (curPath, basePath = WEBSITE_CONF.ROOT_PATH) => {
+  return path.join(
+    '/',
+    path.format({
+      root: '/',
+      base: path.relative(basePath, curPath)
+    })
+  )
+}
+
 module.exports = {
   types,
   xml2Json,
   isEmptyObj,
   genReplyXml,
+  genAbsolutePath,
   md5: str => encryptType('md5', str),
   sha1: str => encryptType('sha1', str)
 }
