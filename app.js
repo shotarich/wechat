@@ -1,11 +1,10 @@
 const fs = require('fs')
 const Koa = require('koa')
 const path = require('path')
-const util = require('./util')
 const views =  require('koa-views')
 const Router = require('koa-router')
 const koaStatic = require('koa-static')
-const routerChildren = require('./routes')
+const childRoutes = require('./routes')
 const Menu = require('./wechat/menu/Menu')
 const AuotReply = require('./wechat/reply/Reply')
 const parseWechatReq = require('./libs/parseWechatReq')
@@ -22,7 +21,7 @@ app.use(views(path.join(__dirname, './views'), {
 }))
 
 // 配置路由
-router.use('/wechat', routerChildren.routes(), routerChildren.allowedMethods())
+router.use('/wechat', childRoutes.routes(), childRoutes.allowedMethods())
 app.use(router.routes(), router.allowedMethods())
 app.use(router.routes())
 app.use(router.allowedMethods())
