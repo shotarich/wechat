@@ -1,25 +1,20 @@
-const fs = require('fs')
 const Router = require('koa-router')
 const sqlExecutor = require('../libs/QuerySql')
-const WESITE_CONFIG = require('../constants/website')
 
 const router = new Router()
 
 router.get('/', async (ctx, next) => {
-  const imgs = await fs.promises.readdir(WESITE_CONFIG.IMGS_PATH)
-
-  const sql = 'SELECT * FROM `meets_love`.`personage` LIMIT 0, 10'
-  const data = await sqlExecutor.query(sql)
-  console.log(data)
-
-  const list = imgs.map(item => {
-    const [address, age] = item.split('.')[0].split('-')
-    return {
-      age,
-      address,
-      src: `/imgs/${item}`
-    }
+  const sql = 'SELECT `id`, `address`, `age`, `sex`, `img_src` as `imgSrc` FROM `personage` LIMIT 0, 10'
+  const characters = await sqlExecutor.query(sql).catch(err => {
+    console.error('获取人物列表时查库失败')
+    console.error(err)
   })
+
+  const list = characters.map(item => ({
+      age: item.age,
+      address: item.address,
+      src: `/imgs/${item.imgSrc}`
+  }))
 
   const renderData = {list}
   await ctx.render('index', renderData)
