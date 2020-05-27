@@ -74,8 +74,11 @@ const genAbsolutePath = (curPath, basePath = WEBSITE_CONF.ROOT_PATH) => {
   )
 }
 
+const isUndef = v => v == undefined
+
 module.exports = {
   types,
+  isUndef,
   xml2Json,
   isEmptyObj,
   genReplyXml,

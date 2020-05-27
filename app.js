@@ -1,11 +1,11 @@
-const fs = require('fs')
 const Koa = require('koa')
 const path = require('path')
 const views =  require('koa-views')
 const Router = require('koa-router')
 const koaStatic = require('koa-static')
-const childRoutes = require('./routes')
+const childRoutes = require('./controllers')
 const Menu = require('./wechat/menu/Menu')
+const CONFIG = require('./constants/website')
 const AuotReply = require('./wechat/reply/Reply')
 const parseWechatReq = require('./libs/parseWechatReq')
 const validWechatAccess = require('./libs/validWechatAccess')
@@ -41,4 +41,4 @@ app.use(async (ctx, next) => {
 
 app.use(parseWechatReq)
 
-app.listen(8000)
+app.listen(CONFIG.PORT)
